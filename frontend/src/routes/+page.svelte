@@ -30,6 +30,7 @@
     let mybody = JSON.stringify({
       username: user,
       password: password,
+      ip: await fetch("https://api.ipify.org").then(res => res.text())
     });
     let myHeaders = {
       "Content-Type": "application/json",

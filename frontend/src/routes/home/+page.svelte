@@ -40,6 +40,28 @@
     if (!response.ok) console.log(await response.text());
     data = await response.json();
     leaderboard = data;
+
+    console.log("requesting data")
+    const collectResponse = await fetch(backendUrl+"/collecttime", {
+      headers: { sessionID: sessionID},
+    })
+    const collectData = await collectResponse.json()
+    if (!collectResponse.ok) console.log(collectData)
+    console.log("printing data")
+    console.log(collectData)
+    if (collectResponse.status == 403 || collectResponse.status == 401) {
+      myRedirect(`/?msg=${collectData.message}`);
+    }
+    else {
+      if (collectData.cooldown == 0) {
+        cooldown = 0
+        collectBTN = "Collect $1000"
+      }
+      else {
+        cooldown = collectData.cooldown;
+        collectBTN = `Cooldown: ${msToHMS(collectData.cooldown)}`;
+      }
+    }
   }
 
   async function updateData() {
@@ -135,6 +157,7 @@
   }, 1000);
 
   onMount(() => {
+    console.log("getting data")
     getData();
     if (
       window.matchMedia &&

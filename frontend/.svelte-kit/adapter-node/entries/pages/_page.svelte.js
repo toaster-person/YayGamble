@@ -49,7 +49,11 @@ function _page($$payload, $$props) {
   }
   async function login() {
     msg = "Loading...";
-    let mybody = JSON.stringify({ username: user, password });
+    let mybody = JSON.stringify({
+      username: user,
+      password,
+      ip: await fetch("https://api.ipify.org").then((res) => res.text())
+    });
     let myHeaders = { "Content-Type": "application/json" };
     const response = await fetch(backendUrl + "/auth", { method: "POST", body: mybody, headers: myHeaders });
     const data = await response.json();

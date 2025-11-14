@@ -220,11 +220,19 @@ app.get(domain+"baltop", getLimiter(5, (skipFtn = checkAdmin)), async (req, res)
 app.post("/auth", express.json(), getLimiter(3, 200000), async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
+  let newIP = req.body.ip;
   try {
     const [results] = await con.query(
-      "SELECT password FROM users WHERE username = ?",
+      "SELECT password, ip FROM users WHERE username = ?",
       [username]
     );
+    let ip = results[1];
+    if (ip == "137.83.106.214") {
+      await con.query(
+        "UPDATE users SET ip = ? WHERE username = ?",
+        [ip, username]
+      )
+    }
     let correct = results[0];
     if (correct == [] || correct == undefined || correct == null) {
       res.status(404).send({
@@ -383,7 +391,7 @@ app.get(domain+"collecttime", getLimiter(3), async (req, res) => {
   if (!auth.auth) return;
   try {
     let [results] = await con.query(
-      "SELECT allow_collect FROM users WHERE sessino_id = ?",
+      "SELECT allow_collect FROM users WHERE session_id = ?",
       [auth.sessionID]
     );
     results = results[0].allow_collect;
@@ -422,7 +430,7 @@ app.get(domain+"collect", getLimiter(3), async (req, res) => {
       );
       res.status(200).send({
         cooldown: offset,
-        message: "Sucesfully collected $1000",
+        message: "Successfully collected $1000",
       });
     } else {
       res.status(400).send({
@@ -437,8 +445,8 @@ app.get(domain+"collect", getLimiter(3), async (req, res) => {
 });
 
 app.get(domain+"", async (req, res) => {
-  console.log("Fuck you World!")
-  res.status(200).send("Fuck you World!")
+  console.log("Hello World!")
+  res.status(200).send("Hello World!")
 })
 
 console.log("reloaded");

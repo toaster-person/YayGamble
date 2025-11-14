@@ -1,5 +1,5 @@
-cd /home/blaze/GENERAL/gamble/SvelteKit
+cd /home/blaze/GENERAL/gamble/frontend
 npm run build
 cd /home/blaze/GENERAL/gamble/
-cp -r SvelteKit/build frontendBuild/
+cp -r frontend/build frontendBuild/
 pm2 restart gamble-front
