@@ -1,9 +1,8 @@
 import { updateIPs } from '$lib';
 import { login, dbQuery } from '$lib/db';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { v7 as uuid } from 'uuid';
 import type { PageServerLoad } from './app/admin/$types';
-import { goto } from '$app/navigation';
 
 export const load: PageServerLoad = ({ url }) => {
 	let searchParams = url.searchParams;
@@ -16,11 +15,11 @@ export const load: PageServerLoad = ({ url }) => {
 export const actions = {
 	default: async ({ cookies, request }) => {
 		const data = await request.formData();
-		const usr = data.get('usr');
-		const pass = data.get('pass');
+		let usr = data.get('usr')?.toString();
+		let pass = data.get('pass')?.toString();
 		if (!usr) return fail(400, { auth: false, msg: 'Please provide a username', usr: usr });
 		if (!pass) return fail(400, { auth: false, msg: 'Please provide a password', usr: usr });
-		const { auth, validUsr } = await login(usr.toString(), pass.toString());
+		const { auth, validUsr } = await login(usr, pass);
 		if (auth) {
 			const res = await dbQuery('SELECT id FROM users WHERE username = ?', [usr]);
 			const results = res[0];
@@ -34,7 +33,7 @@ export const actions = {
 				sessionExpire,
 				results.id
 			]);
-			goto('/app');
+			redirect(303, '/app');
 		} else if (validUsr) {
 			return fail(401, { auth, msg: 'Incorrect Password', usr: usr });
 		} else {

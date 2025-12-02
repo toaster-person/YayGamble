@@ -1,33 +1,28 @@
 <script>
-  let { children } = $props();
-
-  function logout() {
-    localStorage.removeItem("sessionID");
-    // window.location.href = "/";
-    // REDIRECT TO /
-  }
+	import { goto } from '$app/navigation';
+	let { children } = $props();
 </script>
 
 <nav
-  class="bg-(--light-grey) dark:bg-(--grey) rounded-2xl p-4 flex flex-row w-[75%] m-auto text-[1.5rem] justify-between"
+	class="m-auto flex w-[75%] flex-row justify-between rounded-2xl bg-(--light-grey) p-4 text-[1.5rem] dark:bg-(--grey)"
 >
-  <span class="w-[40%] flex flex-row justify-between">
-    <a href="/home"> Home </a>
-    <a href="/games/blackjack">Blackjack</a>
-    <a href="/games/slots">Slots</a>
-  </span>
-  <div class="w-[50%]"></div>
-  <button
-    type="button"
-    class="w-[10%] text-(--red) bg-transparent border-none cursor-pointer hover:underline hover:decoration-wavy hover:decoration-(--red)"
-    onclick={logout}>Logout</button
-  >
+	<span class="flex w-[40%] flex-row justify-between">
+		<a href="/home"> Home </a>
+		<a href="/games/blackjack">Blackjack</a>
+		<a href="/games/slots">Slots</a>
+	</span>
+	<div class="w-[50%]"></div>
+	<button
+		type="button"
+		class="w-[10%] cursor-pointer border-none bg-transparent text-(--red) hover:underline hover:decoration-(--red) hover:decoration-wavy"
+		onclick={() => goto('/logout')}>Logout</button
+	>
 </nav>
 
 {@render children()}
 
 <style>
-  a:hover {
-    color: var(-white);
-  }
+	a:hover {
+		color: var(-white);
+	}
 </style>

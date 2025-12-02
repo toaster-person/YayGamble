@@ -1,8 +1,7 @@
 import { updateIPs } from '$lib';
 import { hash, login, dbQuery } from '$lib/db';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { v7 as uuid } from 'uuid';
-import { goto } from '$app/navigation';
 import type { PageServerLoad } from '../app/admin/$types';
 
 export const load: PageServerLoad = ({ url }) => {
@@ -40,6 +39,6 @@ export const actions = {
 		);
 		const sessionID = uuid();
 		cookies.set('session', sessionID, { path: '/' });
-		goto('/app');
+		redirect(303, '/app');
 	}
 } satisfies Actions;
