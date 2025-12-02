@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		'SELECT id, username, balance, is_admin, allow_collect FROM users WHERE session_id = ?',
 		[locals.sessionID]
 	);
-	if (res.length != 1) return redirect(401, '/?msg=Invalid Session - Please log in');
+	if (res.length != 1) return redirect(303, '/?msg=Invalid Session - Please log in');
 	const results = res[0];
 	const usr = results.username;
 	const balance = results.balance;

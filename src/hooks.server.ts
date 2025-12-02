@@ -13,12 +13,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const res = await dbQuery('SELECT session_expire, is_admin, id FROM users WHERE session_id = ?', [
 		sessionID
 	]);
-	if (res.length != 1) return redirect(401, '/?msg=Invalid Session - Log in again');
+	if (res.length != 1) return redirect(303, '/?msg=Invalid Session - Log in again');
 	const response = res[0];
 	if (response.session_expire < Date.now())
-		return redirect(401, '/?msg=Session Expired - Log in again');
+		return redirect(303, '/?msg=Session Expired - Log in again');
 	if (event.url.pathname == '/app/admin/' && !response.is_admin) {
-		return redirect(403, '/app');
+		return redirect(303, '/app');
 	}
 	return await resolve(event);
 };
