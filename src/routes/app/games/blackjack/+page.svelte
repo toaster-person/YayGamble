@@ -36,6 +36,10 @@
 			bet = 100;
 			return;
 		}
+		dealer = 'Start a new game!';
+		player = 'Start a new game!';
+		dealerValue = 0;
+		playerValue = 0;
 		lockedBet = bet;
 		bal -= lockedBet;
 		playing = true;
@@ -47,26 +51,25 @@
 				bet: lockedBet
 			})
 		});
-		game = await res.json();
-		({ cards, playerCards, dealerCards, playerValue, dealerValue } = game);
-		for (let card in playerCards) player += card + ' ';
-		for (let card in dealerCards) dealer += card + ' ';
+		update(res);
 	}
 
 	async function update(res: Response) {
 		const data = await res.json();
+		player = '';
+		dealer = '';
+		game = data.game;
+		({ cards, playerCards, playerValue, dealerCards, dealerValue } = game);
+		for (let card of playerCards) player += card + ' ';
+		for (let card of dealerCards) dealer += card + ' ';
 		if (data.finished) {
-			const status = data.data;
+			const status = data.win;
 			if (status.push) color = '#FFAC1C';
 			if (status.won) color = '#50C878';
 			else color = '#ee2c2c';
 			msg = status.msg;
 			bal = status.bal;
-		} else {
-			const game = data.data;
-			({ cards, playerCards, playerValue, dealerCards, dealerValue } = game);
-			for (let card in playerCards) player += card + ' ';
-			for (let card in dealerCards) dealer += card + ' ';
+			playing = false;
 		}
 	}
 
@@ -76,7 +79,10 @@
 			msg = 'You need to start a new game first!';
 			return;
 		}
-		const res = await fetch('/api/games/blackjack/hit');
+		const res = await fetch('/api/games/blackjack/hit', {
+			method: 'POST',
+			body: JSON.stringify(game)
+		});
 		update(res);
 	}
 
@@ -86,7 +92,10 @@
 			msg = 'You need to start a new game first!';
 			return;
 		}
-		const res = await fetch('/api/games/blackjack/stand');
+		const res = await fetch('/api/games/blackjack/stand', {
+			method: 'POST',
+			body: JSON.stringify(game)
+		});
 		update(res);
 	}
 </script>

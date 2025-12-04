@@ -26,8 +26,8 @@ export function getCardValue(card: string) {
 export function calcValues(playerCards: string[], dealerCards: string[]) {
 	let playerValue = 0;
 	let dealerValue = 0;
-	for (let card in playerCards) playerValue += getCardValue(card);
-	for (let card in dealerCards) dealerValue += getCardValue(card);
+	for (let card of playerCards) playerValue += getCardValue(card);
+	for (let card of dealerCards) dealerValue += getCardValue(card);
 	({ playerValue, dealerValue } = fixAce(playerCards, dealerCards, playerValue, dealerValue));
 	return { playerValue, dealerValue };
 }
@@ -38,10 +38,10 @@ export function fixAce(
 	playerValue: number,
 	dealerValue: number
 ) {
-	for (let card in playerCards) {
+	for (let card of playerCards) {
 		playerValue -= card.startsWith('A') && playerValue > 21 ? 10 : 0;
 	}
-	for (let card in dealerCards) {
+	for (let card of dealerCards) {
 		dealerValue -= card.startsWith('A') && dealerValue > 21 ? 10 : 0;
 	}
 	return { playerValue, dealerValue };
@@ -59,10 +59,7 @@ export function buildHands(cards: string[]) {
 }
 
 export async function calcWin(stand: boolean, game: BlackJackGame) {
-	let playerValue = game.playerValue;
-	let dealerValue = game.dealerValue;
-	let playerCards = game.playerCards;
-	let dealerCards = game.dealerCards;
+	let { playerValue, dealerValue, playerCards, dealerCards } = game;
 	if (playerValue > 21) return await lose('Bust', game);
 	else if (playerValue == 21 && dealerValue == 21) return await push(game);
 	else if (dealerValue == 21 && dealerCards.length == 2)
@@ -79,32 +76,29 @@ export async function calcWin(stand: boolean, game: BlackJackGame) {
 }
 
 async function win(msg: string, game: BlackJackGame) {
-	const id = game.playerID;
-	const bet = game.bet;
+	const id: string = game.playerID;
+	const bet: number = game.bet;
 	const res = await dbQuery('SELECT balance FROM users WHERE id = ?', [id]);
 	if (res.length != 1) throw new Error('more than 1 user for id');
 	const results = res[0];
-	let bal = results.bal;
-	bal += bet;
+	let bal = results.balance;
+	bal += bet * 2;
 	await dbQuery('UPDATE users SET balance = ? WHERE id = ?', [bal, id]);
 	return { won: true, push: false, bal, msg };
 }
 
 async function lose(msg: string, game: BlackJackGame) {
 	const id = game.playerID;
-	const bet = game.bet;
 	const res = await dbQuery('SELECT balance FROM users WHERE id = ?', [id]);
 	if (res.length != 1) throw new Error('more than 1 user for id');
 	const results = res[0];
-	let bal = results.bal;
-	bal -= bet;
+	let bal = results.balance;
 	await dbQuery('UPDATE users SET balance = ? WHERE id = ?', [bal, id]);
 	return { won: false, push: false, bal, msg };
 }
 
 async function push(game: BlackJackGame) {
 	const id = game.playerID;
-	const bet = game.bet;
 	const res = await dbQuery('SELECT balance FROM users WHERE id = ?', [id]);
 	if (res.length != 1) throw new Error('more than 1 user for id');
 	const results = res[0];

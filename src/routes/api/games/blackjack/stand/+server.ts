@@ -8,9 +8,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	while (dealerValue < 17) {
 		dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
 		({ playerValue, dealerValue } = calcValues(playerCards, dealerCards));
+		game.playerValue = playerValue;
+		game.dealerValue = dealerValue;
 		let win = await calcWin(false, game);
-		if (win) return json({ finished: true, data: win });
+		if (win) return json({ finished: true, game, win });
 	}
 	let win = await calcWin(true, game);
-	return json({ finished: true, data: win });
+	return json({ finished: true, game, win });
 };
