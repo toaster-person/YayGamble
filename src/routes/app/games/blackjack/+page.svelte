@@ -4,11 +4,14 @@
 
 	let { data }: PageProps = $props();
 	let bal = $state(data.bal);
-	let bet = $state(100);
-	let lockedBet = 100;
 	let msg = $state('');
 	let color = $state('#ee2c2c');
 	let playing = false;
+
+	let bet = $state(100);
+	let autoBet = $state(false);
+	let autoBetPercentage = $state(20);
+	let lockedBet = 100;
 
 	let game: BlackJackGame;
 
@@ -36,6 +39,7 @@
 			bet = 100;
 			return;
 		}
+		if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
 		dealer = 'Start a new game!';
 		player = 'Start a new game!';
 		dealerValue = 0;
@@ -70,6 +74,7 @@
 			msg = status.msg;
 			bal = status.bal;
 			playing = false;
+			if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
 		}
 	}
 
@@ -120,15 +125,30 @@
 	<p>{playerValue}</p>
 	<p>{dealerValue}</p>
 </div>
+<span class="m-auto flex h-fit w-[50%] flex-row items-center justify-center text-center">
+	<label for="autoBet" class="m-2 size-fit text-[2rem]">Enable Auto Bet</label>
+	<input type="checkbox" bind:checked={autoBet} name="autoBet" class="size-8 align-middle" />
+</span>
 <div
 	class="m-auto mt-[2%] h-fit w-[50%] rounded-[15px] bg-(--light-grey) p-[1%] text-center text-[1.5rem] dark:bg-(--grey)"
 >
-	Cards Left: {cards.length} | Bet:
-	<input
-		type="number"
-		bind:value={bet}
-		class="m-auto w-[20%] rounded-[5px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
-	/>
+	{#if !autoBet}
+		Cards Left: {cards.length} | Bet:
+		<input
+			type="number"
+			bind:value={bet}
+			class="m-auto w-[20%] rounded-[5px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
+		/>
+	{:else}
+		Cards Left: {cards.length} | % of balance to bet:
+		<input
+			type="number"
+			bind:value={autoBetPercentage}
+			class="m-auto w-[20%] rounded-[5px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
+		/>
+		<br />
+		Bet: {bet}
+	{/if}
 </div>
 <div class="m-auto flex h-fit w-[50%] justify-between p-[2%] text-center">
 	<button

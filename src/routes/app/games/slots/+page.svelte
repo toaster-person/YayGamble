@@ -6,25 +6,28 @@
 
 	const sessionID = data.sessionID;
 
-	let bal = $state(data.bal);
-	let msg = $state('');
-	let color = $state('#fff');
-	let bet = $state(20);
+	var bal = $state(data.bal);
+	var msg = $state('');
+	var color = $state('#fff');
+
+	var autoBet = $state(false);
+	var autoBetPercentage = $state(20);
+	var bet = $state(20);
 
 	const winMulti = 2;
 	const jackpotMulti = 5;
-	let megaJackpotMulti = $state(10);
-	let confettiAmount = $state(700);
+	var megaJackpotMulti = $state(10);
+	var confettiAmount = $state(700);
 
-	let win = $state(false);
-	let jackpot = $state(false);
+	var win = $state(false);
+	var jackpot = $state(false);
 
-	let one = $state(7);
-	let two = $state(7);
-	let three = $state(7);
+	var one = $state(7);
+	var two = $state(7);
+	var three = $state(7);
 
-	let slowing = false;
-	let playing = false;
+	var slowing = false;
+	var playing = false;
 
 	const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -50,6 +53,7 @@
 	}
 
 	async function start() {
+		if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
 		if (playing) return;
 		if (bet < 5) {
 			msg = 'You must bet at least $5!';
@@ -89,6 +93,7 @@
 			msg = `You lost $${data.diff}`;
 		}
 		playing = false;
+		if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
 	}
 
 	onMount(() => {
@@ -169,14 +174,36 @@
 		aria-label="Spin Button"
 		class="m-auto size-28 rounded-full border-0 bg-red-500 transition duration-500 hover:bg-green-500"
 	></button>
-	<span class="m-auto flex w-[50%] flex-row justify-center text-center"
-		><p class="m-2 text-[2rem]">Spin Price:</p>
+	<span>
+		<label for="autoBet" class="m-2 text-[2rem]">Enable Auto Bet</label>
 		<input
-			type="number"
-			bind:value={bet}
-			class="h-fit w-[25%] rounded-[10px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
+			type="checkbox"
+			bind:checked={autoBet}
+			name="autoBet"
+			class="size-8 border-2 border-solid border-(--black) bg-(--white) align-middle dark:border-(--white) dark:bg-(--black)"
 		/>
 	</span>
+
+	{#if !autoBet}
+		<span class="m-auto flex w-[50%] flex-row justify-center text-center"
+			><p class="m-2 text-[2rem]">Bet:</p>
+			<input
+				type="number"
+				bind:value={bet}
+				class="h-fit w-[50%] rounded-[10px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
+			/>
+		</span>
+	{:else}
+		<span class="m-auto flex w-[80%] flex-row justify-center text-center"
+			><p class="m-2 text-[1.7rem]">% of balance to bet:</p>
+			<input
+				type="number"
+				bind:value={autoBetPercentage}
+				class="h-fit w-[25%] rounded-[10px] border-2 border-solid border-(--black) bg-(--white) p-[1%] text-center text-[1.5rem] dark:border-(--white) dark:bg-(--black)"
+			/>
+		</span>
+		<p class="m-2 text-[2rem]">Bet: {bet}</p>
+	{/if}
 </div>
 
 <h1 id="balance" class="m-auto text-center text-[3rem]">
