@@ -102,6 +102,6 @@ async function push(game: BlackJackGame) {
 	const res = await dbQuery('SELECT balance FROM users WHERE id = ?', [id]);
 	if (res.length != 1) throw new Error('more than 1 user for id');
 	const results = res[0];
-	let bal = results.bal;
+	let bal = results.balance;
 	return { won: false, push: true, bal, msg: 'Push - Money Back' };
 }
