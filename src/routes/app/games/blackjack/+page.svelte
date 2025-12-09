@@ -27,7 +27,7 @@
 	async function start() {
 		if (playing) {
 			msg = 'You are currently playing a game!';
-			color = '#ee2c2c';
+			color = '#FFAC1C';
 			return;
 		} else if (bal < bet) {
 			msg = "You don't have enough money! Lower your bet to play.";
@@ -40,8 +40,8 @@
 			return;
 		}
 		if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
-		dealer = 'Start a new game!';
-		player = 'Start a new game!';
+		dealer = 'Loading...';
+		player = 'Loading...';
 		dealerValue = 0;
 		playerValue = 0;
 		lockedBet = bet;

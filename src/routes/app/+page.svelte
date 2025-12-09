@@ -39,7 +39,7 @@
 		});
 		const data = await res.json();
 		if (data.success) {
-			color = '#50C878';
+			color = '#50c878';
 			msg = 'Successfully collected $1000';
 			bal += 1000;
 			let index = leaderboard.findIndex((item) => item.username === usr);
@@ -92,7 +92,9 @@
 	>
 </div>
 
-<p class="m-auto mt-[3%] size-fit text-center text-[1.5rem] text-[#{color}]" id="msg">{msg}</p>
+<p class="m-auto mt-[3%] size-fit text-center text-[1.5rem]" id="msg" style="color: {color};">
+	{msg}
+</p>
 <button
 	class="border-[2px solid #bbbbbb] m-auto flex size-fit flex-col rounded-[15px] border-2 border-solid border-[#bbbbbb] bg-[#bbbbbb] p-[2%] text-center text-[1.5rem] transition duration-500 hover:bg-[#fbfbfb] dark:border-[#4c4c4c] dark:bg-[#4c4c4c] dark:hover:bg-[#1c1c1c]"
 	onclick={collect}
