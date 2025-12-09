@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	let leaderboard: LeaderboardItem[] = [];
 	const lbRes = await dbQuery('SELECT username, balance FROM users WHERE balance > 0');
 	for (let i = 0; i < lbRes.length; i++) {
-		leaderboard[i] = { username: lbRes[0].username, balance: lbRes[0].balance };
+		leaderboard[i] = { username: lbRes[i].username, balance: lbRes[i].balance };
 	}
 	leaderboard.sort((a, b) => {
 		return a.balance - b.balance;
