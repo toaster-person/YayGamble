@@ -27,6 +27,7 @@
 	var three = $state(7);
 
 	var slowing = false;
+	var forceStop = false;
 	var playing = false;
 
 	const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -38,6 +39,7 @@
 		const nums = Array.from({ length: 3 }, () => Math.floor(Math.random() * 9 + 1));
 		[one, two, three] = nums;
 		while (true) {
+			if (forceStop) break;
 			await sleep(spinDelay);
 			if (slowing) {
 				count++;
@@ -53,7 +55,10 @@
 
 	async function start() {
 		if (autoBet) bet = Math.round(bal * (autoBetPercentage / 100));
-		if (playing) return;
+		if (playing) {
+			forceStop = true;
+			return;
+		}
 		if (bet < 5) {
 			msg = 'You must bet at least $5!';
 			color = '#ee2c2c';
@@ -80,6 +85,7 @@
 		const data = await res.json();
 		slowing = true;
 		await spinPromise;
+		forceStop = false;
 		({ one, two, three } = data);
 		bal = data.bal;
 		if (data.won) {
