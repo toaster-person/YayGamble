@@ -83,7 +83,7 @@
 			const status = data.win;
 			color = status.push ? '#FFAC1C' : status.won ? '#50C878' : '#ee2c2c';
 
-			msg = `${status.push ? '' : `You ${status.won ? 'win' : 'lose'}`} - ${status.msg}`;
+			msg = status.push ? status.msg : `You ${status.won ? 'win' : 'lose'} - ${status.msg}`;
 			bal = status.bal;
 			playing = false;
 
@@ -112,13 +112,13 @@
 
 <title>Blackjack</title>
 
-<div class="mt-4 flex flex-col items-center">
-	<h1 class="mb-2 text-[4rem] font-bold tracking-wide">Blackjack</h1>
+<div class="mt-2 flex flex-col items-center">
+	<h1 class="mb-2 text-[3.5rem] font-bold tracking-wide">Blackjack</h1>
 
 	<div
 		class="mb-4 flex w-full max-w-[700px] flex-col items-center rounded-xl bg-(--light-grey) p-4 dark:bg-(--grey)"
 	>
-		<div class="mb-1 text-[2.5rem] font-semibold">
+		<div class="mb-1 text-[2.2rem] font-semibold">
 			Balance: <span class="text-green-500">${bal}</span>
 		</div>
 		<div class="text-[1.8rem] font-medium" style="color: {color}">
@@ -169,13 +169,13 @@
 	</div>
 </div>
 
-<div class="mt-6 flex items-center justify-center">
+<div class="mt-2 flex items-center justify-center">
 	<label for="autoBet" class="mr-3 text-[1.8rem] font-medium">Auto Bet</label>
 	<input id="autoBet" type="checkbox" bind:checked={autoBet} class="h-7 w-7" />
 </div>
 
 <div
-	class="m-auto mt-6 w-full max-w-[700px] rounded-xl bg-(--light-grey) p-4 text-center shadow-lg dark:bg-(--grey)"
+	class="m-auto mt-2 w-full max-w-[700px] rounded-xl bg-(--light-grey) p-4 text-center shadow-lg dark:bg-(--grey)"
 >
 	<div class="mb-2 text-[1.6rem]">
 		Cards Until Shuffle: <strong>{cards.length}</strong>
