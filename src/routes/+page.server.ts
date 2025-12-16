@@ -22,6 +22,9 @@ export const actions = {
 		const data = await request.formData();
 		let usr = data.get('usr')?.toString();
 		let pass = data.get('pass')?.toString();
+		let failedRequests: number = parseInt(cookies.get('reqs') ?? '0');
+		if (failedRequests > 5)
+			return fail(400, { auth: false, msg: 'Too many failed requests', usr: usr });
 		if (!usr) return fail(400, { auth: false, msg: 'Please provide a username', usr: usr });
 		if (!pass) return fail(400, { auth: false, msg: 'Please provide a password', usr: usr });
 		const { auth, validUsr } = await login(usr, pass);
@@ -40,6 +43,7 @@ export const actions = {
 			]);
 			redirect(303, '/app');
 		} else if (validUsr) {
+			cookies.set('reqs', (failedRequests + 1).toString(), { path: '/', maxAge: 60 });
 			return fail(401, { auth, msg: 'Incorrect Password', usr: usr });
 		} else {
 			return fail(401, { auth, msg: 'Username not found', usr: usr });
