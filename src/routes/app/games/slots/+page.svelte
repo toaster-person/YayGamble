@@ -177,7 +177,7 @@
 	<button
 		onclick={start}
 		aria-label="Spin Button"
-		class="m-auto size-28 rounded-full border-0 bg-red-500 transition duration-500 hover:bg-green-500"
+		class="m-auto size-28 rounded-full border-0 bg-red-500"
 	></button>
 	<span>
 		<label for="autoBet" class="m-2 text-[2rem]">Enable Auto Bet</label>

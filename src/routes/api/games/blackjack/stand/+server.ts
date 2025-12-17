@@ -1,3 +1,4 @@
+import { newDeck } from '$lib/blackjack';
 import { calcValues, calcWin, type BlackJackGame } from '$lib/blackjack';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
@@ -6,6 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	let { cards, playerCards, dealerCards, playerValue, dealerValue } = game;
 	dealerCards.splice(dealerCards.indexOf('??'), 2);
 	while (dealerValue < 17) {
+		if (cards.length < 1) cards = newDeck();
 		dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
 		({ playerValue, dealerValue } = calcValues(playerCards, dealerCards));
 		game.playerValue = playerValue;

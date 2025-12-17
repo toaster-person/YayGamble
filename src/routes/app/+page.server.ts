@@ -20,7 +20,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const allowCollect = results.allow_collect;
 	const id = results.id;
 	let leaderboard: LeaderboardItem[] = [];
-	const lbRes = await dbQuery('SELECT username, balance FROM users WHERE balance > 0');
+	const lbRes = await dbQuery(
+		'SELECT username, balance FROM users WHERE balance > 0 ORDER BY balance DESC LIMIT 10'
+	);
 	for (let i = 0; i < lbRes.length; i++) {
 		leaderboard[i] = { username: lbRes[i].username, balance: lbRes[i].balance };
 	}

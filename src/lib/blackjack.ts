@@ -10,8 +10,12 @@ export type BlackJackGame = {
 	playerValue: number;
 };
 
-export function newDeck(suits: string[], ranks: string[]) {
-	let cards = suits.flatMap((suit) => ranks.map((rank) => `${rank}${suit}`));
+export function newDeck() {
+	const suits = ['♠', '♥', '♦', '♣'];
+	const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+	let cards: string[] = [];
+	for (let i = 0; i < 5; i++)
+		cards = cards.concat(suits.flatMap((suit) => ranks.map((rank) => `${rank}${suit}`)));
 	return cards;
 }
 

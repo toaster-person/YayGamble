@@ -29,8 +29,6 @@ export const actions = {
 			return fail(400, { msg: 'Please do not include spaces in your username or password.' });
 		}
 		let results = await dbQuery('SELECT id FROM users WHERE username = ?', [usr]);
-		const ip = data.get('ip')?.toString();
-		if (ip) updateIPs(results.id, ip);
 		if (results.length > 0) return fail(400, { msg: 'Username taken' });
 		const id = uuid();
 		const sessionID = uuid();
@@ -39,6 +37,8 @@ export const actions = {
 			'INSERT INTO users (id, username, password, balance, session_id, session_expire, allow_collect, birth_time, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[id, usr, await hash(pass.toString()), 1000, sessionID, sessionExpire, 0, Date.now(), false]
 		);
+		const ip = data.get('ip')?.toString();
+		if (ip) updateIPs(id, ip);
 		cookies.set('session', sessionID, { path: '/' });
 		redirect(303, '/app');
 	}
