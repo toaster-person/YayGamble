@@ -4,7 +4,7 @@
 	let { data, form }: PageProps = $props();
 	let msg = $state(form?.msg ?? data.msg);
 	let color = $state(data.color);
-	let usr = $state(data.usr);
+	let usr = $state(form?.usr ?? data.usr);
 	let pass = $state(data.pass);
 	let ip = $state('');
 
