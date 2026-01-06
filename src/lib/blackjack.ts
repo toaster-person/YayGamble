@@ -103,9 +103,12 @@ async function lose(msg: string, game: BlackJackGame) {
 
 async function push(game: BlackJackGame) {
 	const id = game.playerID;
+	const bet = game.bet;
 	const res = await dbQuery('SELECT balance FROM users WHERE id = ?', [id]);
 	if (res.length != 1) throw new Error('more than 1 user for id');
 	const results = res[0];
 	let bal = results.balance;
+	bal += bet
+	await dbQuery('UPDATE users SET balance = ? WHERE id = ?', [bal, id]);
 	return { won: false, push: true, bal, msg: 'Push - Money Back' };
 }
